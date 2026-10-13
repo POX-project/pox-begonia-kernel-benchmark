@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.DS_Store
+*.swp
+*.swo
+*~
+results/run_*.json
+results/*_report.md
+!results/sample_stock_vs_0.9_report.md
