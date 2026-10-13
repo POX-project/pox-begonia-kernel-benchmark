@@ -32,8 +32,9 @@ log_metric() {
     printf "  ${CLR_GRAY}▸${CLR_RESET} %-36s ${CLR_BOLD}%10s${CLR_RESET} %s\n" "$name" "$val" "$unit"
 }
 
-# Metric Storage Array
-declare -a METRIC_ENTRIES=()
+# Metric Storage Structure (Key-Deduplicated)
+declare -A METRIC_MAP=()
+declare -a METRIC_KEYS=()
 
 record_metric() {
     local category="$1"
@@ -66,7 +67,10 @@ record_metric() {
     }
 METRIC_EOF
 )
-    METRIC_ENTRIES+=("$entry")
+    if [[ -z "${METRIC_MAP[$key]:-}" ]]; then
+        METRIC_KEYS+=("$key")
+    fi
+    METRIC_MAP["$key"]="$entry"
 }
 
 # ADB Command Runner
@@ -141,8 +145,13 @@ export_results_json() {
     local outfile="$1"
     mkdir -p "$(dirname "$outfile")"
 
+    local entries=()
+    for k in "${METRIC_KEYS[@]}"; do
+        entries+=("${METRIC_MAP[$k]}")
+    done
+
     local metrics_body
-    metrics_body=$(IFS=,; echo "${METRIC_ENTRIES[*]}")
+    metrics_body=$(IFS=,; echo "${entries[*]}")
 
     cat <<JSON_EOF > "$outfile"
 {

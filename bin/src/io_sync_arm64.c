@@ -1,4 +1,5 @@
-/* Standalone AArch64 Linux 4KiB sync IOPS microbenchmark (nostdlib) */
+/* Standalone AArch64 Linux 4KiB sync IOPS & latency microbenchmark (nostdlib) */
+
 struct timespec {
     long tv_sec;
     long tv_nsec;
@@ -63,7 +64,7 @@ static inline void sys_exit(int code) {
 
 static void print_str(const char *s) {
     unsigned long len = 0;
-    while (s[len]) len++;
+    while(s[len]) len++;
     sys_write(1, s, len);
 }
 
@@ -71,10 +72,9 @@ static void print_ulong(unsigned long n) {
     char buf[32];
     int idx = 30;
     buf[31] = '\0';
-    if (n == 0) {
-        buf[idx--] = '0';
-    } else {
-        while (n > 0 && idx >= 0) {
+    if (n == 0) { buf[idx--] = '0'; }
+    else {
+        while (n > 0) {
             buf[idx--] = '0' + (n % 10);
             n /= 10;
         }
@@ -82,11 +82,11 @@ static void print_ulong(unsigned long n) {
     print_str(&buf[idx + 1]);
 }
 
-static char block_buf[4096] __attribute__((aligned(4096)));
+static char block_buf[4096];
 
-void _start(void) {
-    const char *path = "/data/local/tmp/pox_bench/tmp/io_sync_test.bin";
-    // O_WRONLY|O_CREAT|O_TRUNC = 01|0100|01000 = 01101 = 577
+void _start(int argc, char **argv) {
+    const char *path = "/data/local/tmp/pox_bench/tmp/sync_direct_4k.bin";
+
     long fd = sys_openat(-100 /* AT_FDCWD */, path, 577, 0644);
     if (fd < 0) {
         print_str("open failed\n");
@@ -97,7 +97,7 @@ void _start(void) {
         block_buf[i] = (char)(i & 0xFF);
     }
 
-    int count = 200;
+    int count = 250;
     struct timespec ts1, ts2;
     sys_clock_gettime(1 /* CLOCK_MONOTONIC */, &ts1);
     for (int i = 0; i < count; i++) {
@@ -111,12 +111,22 @@ void _start(void) {
 
     unsigned long long diff_ns = (ts2.tv_sec - ts1.tv_sec) * 1000000000ULL + (ts2.tv_nsec - ts1.tv_nsec);
     unsigned long long iops = (count * 1000000000ULL) / diff_ns;
+    unsigned long long avg_ns = diff_ns / count;
+    unsigned long long whole_ms = avg_ns / 1000000ULL;
+    unsigned long long frac_ms = (avg_ns % 1000000ULL) / 10000ULL;
 
     print_str("Operations: ");
     print_ulong(count);
     print_str("\nIOPS: ");
     print_ulong(iops);
     print_str(".0\n");
+
+    print_str("Latency: ");
+    print_ulong(whole_ms);
+    print_str(".");
+    if (frac_ms < 10) print_str("0");
+    print_ulong(frac_ms);
+    print_str(" ms\n");
 
     sys_exit(0);
 }
