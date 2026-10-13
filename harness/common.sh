@@ -111,7 +111,17 @@ check_device_connection() {
     fi
 
     if [[ -z "${ADB_SERIAL:-}" ]]; then
-        ADB_SERIAL=$(echo "$devices" | head -n 1 | awk '{print $1}')
+        for dev in $(echo "$devices" | awk '{print $1}'); do
+            local codename=$(adb -s "$dev" shell "getprop ro.product.device" 2>/dev/null | tr -d '
+')
+            if [[ "$codename" == *"begonia"* ]]; then
+                ADB_SERIAL="$dev"
+                break
+            fi
+        done
+        if [[ -z "${ADB_SERIAL:-}" ]]; then
+            ADB_SERIAL=$(echo "$devices" | head -n 1 | awk '{print $1}')
+        fi
     fi
     log_pass "Connected to device: $ADB_SERIAL"
 
