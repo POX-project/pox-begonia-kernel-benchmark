@@ -41,6 +41,12 @@ lock_cpu_frequencies() {
             if [ -f /proc/perfmgr/gaming_mode ]; then
                 echo 1 > /proc/perfmgr/gaming_mode 2>/dev/null || true
             fi
+            if [ -f /proc/perfmgr/dynamic_fsync ]; then
+                echo 1 > /proc/perfmgr/dynamic_fsync 2>/dev/null || true
+            fi
+            if [ -f /sys/block/sda/queue/scheduler ]; then
+                echo noop > /sys/block/sda/queue/scheduler 2>/dev/null || true
+            fi
         '"
     else
         log_warn "Non-Root mode: Cannot lock CPU governors. Benchmarks will run under active interactive/schedplus governor."
