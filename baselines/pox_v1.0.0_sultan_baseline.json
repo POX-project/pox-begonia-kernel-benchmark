@@ -1,0 +1,249 @@
+{
+  "benchmark_suite": "pox-begonia-kernel-benchmark",
+  "version": "1.0.0",
+  "timestamp": "2026-10-13T06:30:45Z",
+  "device": {
+    "serial": "hitsfmamp7pb8xlz",
+    "model": "Redmi Note 8 Pro",
+    "codename": "begonia",
+    "kernel": "4.14.357-Pox-1.0.0-Beta-Onyx-Sultan-APatch-50086db",
+    "android_version": "16",
+    "build_id": "BP4A.251205.006",
+    "is_rooted": true,
+    "run_mode": "auto"
+  },
+  "metrics": [
+    {
+      "category": "identity",
+      "key": "kernel_uts_release_len",
+      "name": "UTS_RELEASE Character Length",
+      "value": 50,
+      "unit": "chars",
+      "higher_is_better": false
+    },    {
+      "category": "identity",
+      "key": "kernel_is_pox_valid",
+      "name": "Pox Kernel Signature",
+      "value": 1,
+      "unit": "bool",
+      "higher_is_better": true
+    },    {
+      "category": "identity",
+      "key": "kernel_crash_indicators",
+      "name": "Early Boot Crash Count",
+      "value": 0,
+      "unit": "panics",
+      "higher_is_better": false
+    },    {
+      "category": "sched",
+      "key": "sched_migration_cost_writable",
+      "name": "NodeLooper Sysctl Writable",
+      "value": 1,
+      "unit": "bool",
+      "higher_is_better": true
+    },    {
+      "category": "sched",
+      "key": "sched_cortex_a76_speedup_x",
+      "name": "Cortex-A76 vs A55 Speedup",
+      "value": 1.82,
+      "unit": "x",
+      "higher_is_better": true
+    },    {
+      "category": "sched",
+      "key": "sched_ctx_switch_us",
+      "name": "Pipe Context Switch Latency",
+      "value": 10.28,
+      "unit": "µs",
+      "higher_is_better": false
+    },    {
+      "category": "sched",
+      "key": "sched_fork_latency_ms",
+      "name": "Process Fork & Exec Overhead",
+      "value": 0.11,
+      "unit": "ms",
+      "higher_is_better": false
+    },    {
+      "category": "memory",
+      "key": "xswapd_engine_active",
+      "name": "Pox xswapd Daemon Active",
+      "value": 1,
+      "unit": "bool",
+      "higher_is_better": true
+    },    {
+      "category": "memory",
+      "key": "xswapd_reclaimed_mb",
+      "name": "xswapd Reclaimed Total",
+      "value": 1677,
+      "unit": "MB",
+      "higher_is_better": true
+    },    {
+      "category": "memory",
+      "key": "mem_bandwidth_mibs",
+      "name": "RAM Sequential Bandwidth",
+      "value": 6100,
+      "unit": "MiB/s",
+      "higher_is_better": true
+    },    {
+      "category": "memory",
+      "key": "mem_page_fault_lat_us",
+      "name": "Anonymous Page Fault Latency",
+      "value": 2,
+      "unit": "µs",
+      "higher_is_better": false
+    },    {
+      "category": "memory",
+      "key": "mem_zram_ratio",
+      "name": "ZRAM Compression Ratio",
+      "value": 2.5,
+      "unit": ":1",
+      "higher_is_better": true
+    },    {
+      "category": "memory",
+      "key": "mem_psi_stall_pct",
+      "name": "Memory PSI Stall Rate (avg10)",
+      "value": 0,
+      "unit": "%",
+      "higher_is_better": false
+    },    {
+      "category": "power",
+      "key": "pwr_sdp_500ma_compliant",
+      "name": "USB SDP 500mA Compliant",
+      "value": 1,
+      "unit": "bool",
+      "higher_is_better": true
+    },    {
+      "category": "power",
+      "key": "pwr_charging_current_ma",
+      "name": "Charging Current Draw",
+      "value": 85.4,
+      "unit": "mA",
+      "higher_is_better": false
+    },    {
+      "category": "power",
+      "key": "pwr_idle_current_ma",
+      "name": "Baseline Current Consumption",
+      "value": 28,
+      "unit": "mA",
+      "higher_is_better": false
+    },    {
+      "category": "thermal",
+      "key": "thermal_cpu_temp_c",
+      "name": "Helio G90T CPU Temp",
+      "value": 49,
+      "unit": "°C",
+      "higher_is_better": false
+    },    {
+      "category": "thermal",
+      "key": "thermal_pmic_temp_c",
+      "name": "MT6359 PMIC Temp",
+      "value": 46,
+      "unit": "°C",
+      "higher_is_better": false
+    },    {
+      "category": "thermal",
+      "key": "ppm_policy_active",
+      "name": "MediaTek PPM Active",
+      "value": 1,
+      "unit": "bool",
+      "higher_is_better": true
+    },    {
+      "category": "thermal",
+      "key": "thermal_peak_stress_temp_c",
+      "name": "Peak Stress Thermal Temp",
+      "value": 38,
+      "unit": "°C",
+      "higher_is_better": false
+    },    {
+      "category": "graphics",
+      "key": "ged_driver_active",
+      "name": "MediaTek GED Active",
+      "value": 1,
+      "unit": "bool",
+      "higher_is_better": true
+    },    {
+      "category": "graphics",
+      "key": "gfx_jank_percent",
+      "name": "SurfaceFlinger Jank Ratio",
+      "value": 2.24,
+      "unit": "%",
+      "higher_is_better": false
+    },    {
+      "category": "graphics",
+      "key": "gfx_p99_frame_time_ms",
+      "name": "99th Percentile Frame Time",
+      "value": 32,
+      "unit": "ms",
+      "higher_is_better": false
+    },    {
+      "category": "storage",
+      "key": "io_seq_write_mbs",
+      "name": "Sequential Write Throughput",
+      "value": 3950.6,
+      "unit": "MB/s",
+      "higher_is_better": true
+    },    {
+      "category": "storage",
+      "key": "io_seq_read_mbs",
+      "name": "Sequential Read Throughput",
+      "value": 2587.2,
+      "unit": "MB/s",
+      "higher_is_better": true
+    },    {
+      "category": "storage",
+      "key": "io_4k_sync_iops",
+      "name": "4KiB Sync Write IOPS",
+      "value": 313797,
+      "unit": "IOPS",
+      "higher_is_better": true
+    },    {
+      "category": "storage",
+      "key": "io_fsync_latency_ms",
+      "name": "Fsync Barrier Latency",
+      "value": 0.45,
+      "unit": "ms",
+      "higher_is_better": false
+    },    {
+      "category": "crypto",
+      "key": "crypto_sha256_mbs",
+      "name": "ARMv8 SHA-256 Throughput",
+      "value": 663.6,
+      "unit": "MB/s",
+      "higher_is_better": true
+    },    {
+      "category": "crypto",
+      "key": "crypto_sha512_mbs",
+      "name": "ARMv8 SHA-512 Throughput",
+      "value": 259.9,
+      "unit": "MB/s",
+      "higher_is_better": true
+    },    {
+      "category": "security",
+      "key": "sec_root_active",
+      "name": "Root Provider Active",
+      "value": 1,
+      "unit": "bool",
+      "higher_is_better": true
+    },    {
+      "category": "security",
+      "key": "sec_selinux_enforcing",
+      "name": "SELinux Enforcing Mode",
+      "value": 1,
+      "unit": "bool",
+      "higher_is_better": true
+    },    {
+      "category": "thermal",
+      "key": "suite_total_duration_s",
+      "name": "Sustained Suite Duration",
+      "value": 308,
+      "unit": "s",
+      "higher_is_better": true
+    },    {
+      "category": "thermal",
+      "key": "suite_total_passes",
+      "name": "Sustained Passes Completed",
+      "value": 23,
+      "unit": "passes",
+      "higher_is_better": true
+    }
+  ]
+}
