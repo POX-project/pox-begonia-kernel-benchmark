@@ -1,0 +1,3 @@
+## 2024-10-24 - Batching ADB Shell Calls
+**Learning:** ADB shell calls have a significant initialization overhead (~100-300ms each) when executing from host scripts. Making multiple sequential calls for system properties can add seconds to script execution times.
+**Action:** Always batch multiple device shell commands into a single `adb shell "cmd1; cmd2; cmd3"` invocation when querying system state or pushing configuration, and parse the multiline output on the host.

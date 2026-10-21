@@ -138,11 +138,15 @@ check_device_connection() {
     fi
 
     # Read system metadata
-    DEVICE_MODEL=$(adb -s "$ADB_SERIAL" shell "getprop ro.product.model" 2>/dev/null | tr -d '\r\n')
-    DEVICE_NAME=$(adb -s "$ADB_SERIAL" shell "getprop ro.product.device" 2>/dev/null | tr -d '\r\n')
-    KERNEL_RELEASE=$(adb -s "$ADB_SERIAL" shell "uname -r" 2>/dev/null | tr -d '\r\n')
-    ANDROID_VERSION=$(adb -s "$ADB_SERIAL" shell "getprop ro.build.version.release" 2>/dev/null | tr -d '\r\n')
-    BUILD_ID=$(adb -s "$ADB_SERIAL" shell "getprop ro.build.id" 2>/dev/null | tr -d '\r\n')
+    # Batch ADB shell calls to reduce initialization latency (~100-300ms overhead per call)
+    local sys_info
+    sys_info=$(adb -s "$ADB_SERIAL" shell "getprop ro.product.model; getprop ro.product.device; uname -r; getprop ro.build.version.release; getprop ro.build.id" 2>/dev/null | tr -d '\r')
+
+    DEVICE_MODEL=$(echo "$sys_info" | sed -n '1p')
+    DEVICE_NAME=$(echo "$sys_info" | sed -n '2p')
+    KERNEL_RELEASE=$(echo "$sys_info" | sed -n '3p')
+    ANDROID_VERSION=$(echo "$sys_info" | sed -n '4p')
+    BUILD_ID=$(echo "$sys_info" | sed -n '5p')
 
     log_info "Target Model:   $DEVICE_MODEL ($DEVICE_NAME)"
     log_info "Kernel Release: $KERNEL_RELEASE"
