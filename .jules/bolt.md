@@ -1,0 +1,3 @@
+## 2024-05-15 - ADB Command Batching Optimization
+**Learning:** ADB shell commands have a significant initialization overhead (~100-300ms per invocation). Executing multiple commands in a host-side loop (e.g., `for i in 1 2 3; do adb shell command; done`) multiplies this latency, artificially inflating benchmark duration and potentially interfering with timing-sensitive tests like frame pacing.
+**Action:** Always batch multiple remote device shell commands into a single `adb shell` invocation (e.g., `adb shell "for i in 1 2 3; do command; done"`) to eliminate repetitive initialization latency.
