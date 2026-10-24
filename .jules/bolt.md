@@ -1,0 +1,3 @@
+## 2024-10-24 - ADB Shell Initialization Overhead Optimization
+**Learning:** ADB shell calls have a significant initialization overhead (~100-300ms per invocation). When simulating user interactions like rapid UI scrolling with multiple `adb shell input swipe` commands in a bash `for` loop, this overhead completely disrupts the intended pacing (e.g. `sleep 0.2` becomes `sleep ~0.4`).
+**Action:** Always batch multiple device shell commands (including loops and sleeps) into a single `adb shell` invocation string to eliminate repeated connection overhead and ensure accurate timing in testing harnesses.
