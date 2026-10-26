@@ -8,19 +8,18 @@ run_graphics_ui_module() {
 
     log_info "Simulating user UI scroll and collecting SurfaceFlinger frame timings..."
     
-    # Launch Settings for a uniform UI scroll surface
-    adb_cmd shell "am start -a android.settings.SETTINGS >/dev/null 2>&1"
-    sleep 1
-
-    # Reset frame stats
-    adb_cmd shell "dumpsys gfxinfo com.android.settings reset >/dev/null 2>&1"
-
-    # Simulate 5 rapid flick scrolls
-    for i in $(seq 1 5); do
-        adb_cmd shell "input swipe 500 1600 500 400 150" 2>/dev/null || true
-        sleep 0.2
-    done
-    sleep 0.5
+    # Batch UI setup and scrolling to eliminate repeated adb shell connection latency (~100-300ms per invocation)
+    # This ensures tighter timing for our UI fluidity benchmark
+    adb_cmd shell "
+        am start -a android.settings.SETTINGS >/dev/null 2>&1
+        sleep 1
+        dumpsys gfxinfo com.android.settings reset >/dev/null 2>&1
+        for i in \$(seq 1 5); do
+            input swipe 500 1600 500 400 150 2>/dev/null || true
+            sleep 0.2
+        done
+        sleep 0.5
+    "
 
     # Scrape gfxinfo statistics
     local gfx_dump
