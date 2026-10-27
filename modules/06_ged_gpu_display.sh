@@ -38,18 +38,22 @@ run_ged_gpu_display_module() {
 
     # 2. SurfaceFlinger Frame Pacing & Jank Detection
     log_info "Simulating user UI scroll and testing SurfaceFlinger frame pacing..."
-    adb_cmd shell "am start -a android.settings.SETTINGS >/dev/null 2>&1"
-    sleep 0.8
-    adb_cmd shell "dumpsys gfxinfo com.android.settings reset >/dev/null 2>&1"
 
-    for i in $(seq 1 5); do
-        adb_cmd shell "input swipe 500 1600 500 400 150" 2>/dev/null || true
-        sleep 0.2
-    done
-    sleep 0.5
-
+    # ⚡ Bolt Optimization: Batch ADB shell commands to eliminate repetitive initialization latency (~100-300ms per call)
     local gfx_dump
-    gfx_dump=$(adb_cmd shell "dumpsys gfxinfo com.android.settings" 2>/dev/null)
+    gfx_dump=$(adb_cmd shell "
+        am start -a android.settings.SETTINGS >/dev/null 2>&1
+        sleep 0.8
+        dumpsys gfxinfo com.android.settings reset >/dev/null 2>&1
+
+        for i in 1 2 3 4 5; do
+            input swipe 500 1600 500 400 150 2>/dev/null || true
+            sleep 0.2
+        done
+        sleep 0.5
+
+        dumpsys gfxinfo com.android.settings 2>/dev/null
+    ")
 
     local jank_pct
     jank_pct=$(echo "$gfx_dump" | awk '
