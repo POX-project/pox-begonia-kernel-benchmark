@@ -137,12 +137,24 @@ check_device_connection() {
         log_warn "Device is NOT rooted or SU was denied. Operating in Non-Root mode."
     fi
 
-    # Read system metadata
-    DEVICE_MODEL=$(adb -s "$ADB_SERIAL" shell "getprop ro.product.model" 2>/dev/null | tr -d '\r\n')
-    DEVICE_NAME=$(adb -s "$ADB_SERIAL" shell "getprop ro.product.device" 2>/dev/null | tr -d '\r\n')
-    KERNEL_RELEASE=$(adb -s "$ADB_SERIAL" shell "uname -r" 2>/dev/null | tr -d '\r\n')
-    ANDROID_VERSION=$(adb -s "$ADB_SERIAL" shell "getprop ro.build.version.release" 2>/dev/null | tr -d '\r\n')
-    BUILD_ID=$(adb -s "$ADB_SERIAL" shell "getprop ro.build.id" 2>/dev/null | tr -d '\r\n')
+    # Read system metadata efficiently by batching into a single adb shell call
+    # This prevents the 100-300ms overhead of multiple ADB invocations
+    local metadata
+    metadata=$(adb -s "$ADB_SERIAL" shell '
+        echo "$(getprop ro.product.model)"
+        echo "$(getprop ro.product.device)"
+        echo "$(uname -r)"
+        echo "$(getprop ro.build.version.release)"
+        echo "$(getprop ro.build.id)"
+    ' 2>/dev/null | tr -d '\r')
+
+    {
+        read -r DEVICE_MODEL
+        read -r DEVICE_NAME
+        read -r KERNEL_RELEASE
+        read -r ANDROID_VERSION
+        read -r BUILD_ID
+    } <<< "$metadata"
 
     log_info "Target Model:   $DEVICE_MODEL ($DEVICE_NAME)"
     log_info "Kernel Release: $KERNEL_RELEASE"
