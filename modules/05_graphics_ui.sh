@@ -15,11 +15,8 @@ run_graphics_ui_module() {
     # Reset frame stats
     adb_cmd shell "dumpsys gfxinfo com.android.settings reset >/dev/null 2>&1"
 
-    # Simulate 5 rapid flick scrolls
-    for i in $(seq 1 5); do
-        adb_cmd shell "input swipe 500 1600 500 400 150" 2>/dev/null || true
-        sleep 0.2
-    done
+    # Simulate 5 rapid flick scrolls (batched to reduce ADB overhead)
+    adb_cmd shell "for i in 1 2 3 4 5; do input swipe 500 1600 500 400 150 2>/dev/null; sleep 0.2; done" || true
     sleep 0.5
 
     # Scrape gfxinfo statistics
