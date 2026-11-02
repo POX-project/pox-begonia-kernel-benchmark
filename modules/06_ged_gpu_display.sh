@@ -42,10 +42,8 @@ run_ged_gpu_display_module() {
     sleep 0.8
     adb_cmd shell "dumpsys gfxinfo com.android.settings reset >/dev/null 2>&1"
 
-    for i in $(seq 1 5); do
-        adb_cmd shell "input swipe 500 1600 500 400 150" 2>/dev/null || true
-        sleep 0.2
-    done
+    # Batch ADB shell commands to reduce initialization overhead (~100-300ms per call)
+    adb_cmd shell "for i in \$(seq 1 5); do input swipe 500 1600 500 400 150; sleep 0.2; done" 2>/dev/null || true
     sleep 0.5
 
     local gfx_dump
