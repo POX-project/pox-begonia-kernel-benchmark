@@ -1,0 +1,3 @@
+## 2026-11-06 - Batched ADB Shell Calls
+**Learning:** In the Android kernel benchmarking environment, ADB shell calls incur a significant initialization overhead of approximately 100-300ms per call. Making sequential individual calls to extract basic system metadata (model, name, kernel version, etc.) creates a measurable bottleneck during script initialization and execution.
+**Action:** When extracting multiple pieces of data from the device shell in Bash scripts, always batch commands into a single `adb shell` invocation using `echo` and command substitutions, separated by a unique delimiter (e.g., `||`), and parse the result client-side using `awk`.
