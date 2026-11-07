@@ -138,11 +138,26 @@ check_device_connection() {
     fi
 
     # Read system metadata
-    DEVICE_MODEL=$(adb -s "$ADB_SERIAL" shell "getprop ro.product.model" 2>/dev/null | tr -d '\r\n')
-    DEVICE_NAME=$(adb -s "$ADB_SERIAL" shell "getprop ro.product.device" 2>/dev/null | tr -d '\r\n')
-    KERNEL_RELEASE=$(adb -s "$ADB_SERIAL" shell "uname -r" 2>/dev/null | tr -d '\r\n')
-    ANDROID_VERSION=$(adb -s "$ADB_SERIAL" shell "getprop ro.build.version.release" 2>/dev/null | tr -d '\r\n')
-    BUILD_ID=$(adb -s "$ADB_SERIAL" shell "getprop ro.build.id" 2>/dev/null | tr -d '\r\n')
+    # Optimization: Batch multiple properties and uname checks into a single ADB shell
+    # call to reduce ADB connection initialization overhead (~100-300ms per call).
+    local sys_meta
+    sys_meta=$(adb -s "$ADB_SERIAL" shell "
+        echo -n \$(getprop ro.product.model 2>/dev/null)
+        echo -n '|||'
+        echo -n \$(getprop ro.product.device 2>/dev/null)
+        echo -n '|||'
+        echo -n \$(uname -r 2>/dev/null)
+        echo -n '|||'
+        echo -n \$(getprop ro.build.version.release 2>/dev/null)
+        echo -n '|||'
+        echo -n \$(getprop ro.build.id 2>/dev/null)
+    " 2>/dev/null | tr -d '\r\n')
+
+    DEVICE_MODEL=$(echo "$sys_meta" | awk -F '[|][|][|]' '{print $1}')
+    DEVICE_NAME=$(echo "$sys_meta" | awk -F '[|][|][|]' '{print $2}')
+    KERNEL_RELEASE=$(echo "$sys_meta" | awk -F '[|][|][|]' '{print $3}')
+    ANDROID_VERSION=$(echo "$sys_meta" | awk -F '[|][|][|]' '{print $4}')
+    BUILD_ID=$(echo "$sys_meta" | awk -F '[|][|][|]' '{print $5}')
 
     log_info "Target Model:   $DEVICE_MODEL ($DEVICE_NAME)"
     log_info "Kernel Release: $KERNEL_RELEASE"
