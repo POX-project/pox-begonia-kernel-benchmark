@@ -1,0 +1,3 @@
+## 2024-05-17 - ADB Shell Call Overhead Optimization
+**Learning:** ADB shell calls have a significant initialization overhead (~100-300ms per call). When gathering multiple pieces of system metadata or executing sequential commands, dispatching individual `adb shell` calls creates a massive latency bottleneck, especially on operations meant to be quick like test harness initialization.
+**Action:** Always batch multiple device shell commands into a single `adb shell` invocation. You can string commands together using shell constructs (like `echo -n $(cmd)`) and delimiters (like `|||`), then parse the single combined output string on the host side using `awk`.
